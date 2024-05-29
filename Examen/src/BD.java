@@ -10,7 +10,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Statement;
 
-public class BD {
+public class BD extends Entrada_Salida{
     public static Connection conexion = null;
     public static Statement st = null;
     public static PreparedStatement sentencia = null;
@@ -26,30 +26,27 @@ public class BD {
     }    
 
     public static void insertarBD() throws Exception{
-        String sql = "INSERT INTO  VALUES())";
-        st = conexionexion.prepareStatement(sql);
-        /*
-        st.setInt(1, l.getN_carta());
-        st.setString(2, l.getNombre());
-        st.setString(3, l.getCategoria());
-        st.setDouble(4, l.getPrecio());
-        st.executeUpdate();
-        */
+        String sql = "INSERT INTO  VALUES(?, ?, ?, ?)";
+        sentencia = conexion.prepareStatement(sql);
+        sentencia.setInt(1, devolverInt());;
+        sentencia.setString(2, devolverString());
+        sentencia.setString(3, devolverString());
+        sentencia.setDouble(4, devolverDouble());
+        sentencia.executeUpdate();
     }
 
-    public static void actualizarBD(String atributo, int cartaActualizar) throws Exception{
+    public static void actualizarBD() throws Exception{
         String sql = "UPDATE SET ? = ? WHERE  = ?";
-        st = conexionexion.prepareStatement(sql);
-        //st.setString(1, atributo);
+        sentencia = conexion.prepareStatement(sql);
+        sentencia.setString(1, devolverString());
+        sentencia.executeUpdate();
     }
 
-    public static void eliminarBD(){
-        st = null;
+    public static void eliminarBD() throws Exception{
         String sql = "DELETE FROM carta WHERE n_carta = ?";
-        st = conexionexion.prepareStatement(sql);
-        int n_carta_eliminar = recibirNumCarta();
-        st.setInt(1, n_carta_eliminar);
-        st.executeQuery();
+        sentencia = conexion.prepareStatement(sql);
+        sentencia.setInt(1, devolverInt());
+        sentencia.executeQuery();
     }
 
     public static void registrarNuevaCartaHashMap(int nCarta) throws Exception{
@@ -59,19 +56,20 @@ public class BD {
         }
     }
 
-    public static void idAutogenerado(){
-        String query = "INSERT INTO ....";
-        PreparedStatement preparedStatement = conexion.prepareStatement(query, PreparedStatement.RETURN_GENERATED_KEYS);
+    public static void idAutogenerado() throws Exception{
+        st = conexion.createStatement();
 
-        preparedStatement.setXXX(1, VALUE); 
-        preparedStatement.setXXX(2, VALUE); 
-        preparedStatement.executeUpdate();  
-
-        ResultSet rs = preparedStatement.getGeneratedKeys();  
-        int key = rs.next() ? rs.getInt(1) : 0;
-
-        if(key!=0){
-            System.out.println("Generated key="+key);
+        st.executeUpdate("CREATE TABLE EMP_PHONE (EMPNO CHAR(6), PHONENO CHAR(4), " + "IDENTCOL INTEGER GENERATED ALWAYS AS IDENTITY)"); 
+        sentencia =conexion.prepareStatement("INSERT INTO EMP_PHONE (EMPNO, PHONENO) " + "VALUES ('000010', '5555')", Statement.RETURN_GENERATED_KEYS);
+                                      
+        rs = st.getGeneratedKeys(); 
+                                      
+        while (rs.next()) {
+            java.math.BigDecimal idColVar = rs.getBigDecimal(1);     
+                                                
+            System.out.println("automatically generated key value = " + idColVar);
         }
+        rs.close();
+        st.close();
     }
 }
