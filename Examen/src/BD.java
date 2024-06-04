@@ -13,7 +13,7 @@ import java.sql.Statement;
 /*
  * execute() -> DDL (Crear Tablas, etc) Returns BOOLEAN
  * executeUpdate() -> Insert, Update, Delete Returns INTEGER
- * executeQuery() -> SELECT ... Returns RSs
+ * executeQuery() -> SELECT ... Returns RS
  */
 
 public class BD extends Entrada_Salida{
