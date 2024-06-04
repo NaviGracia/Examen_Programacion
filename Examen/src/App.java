@@ -19,5 +19,16 @@ public class App extends Entrada_Salida{
         } catch (Exception e) {
             System.out.println("Error en la carga de la BD: " + e);
         }
+
+        System.out.println("Menú: " + "\n 1. " + "\n 2. " + "\n 3. " + "\n 4. ");
+
+        switch (bd) {
+            case value:
+                
+                break;
+        
+            default:
+                break;
+        }
     }
 }
