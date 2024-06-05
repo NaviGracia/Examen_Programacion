@@ -88,19 +88,18 @@ public class BD extends Entrada_Salida{
 
 
     public static void idAutogenerado() throws Exception{
-        Statement stm = conexion.createStatement();
+        String sql = "INSERT INTO ? (Atributos) VALUES(?, ?)";
+        /*El id autogenerado no se especifica en el values */
+        PreparedStatement stTemporal = conexion.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+            
+        stTemporal.setString(1, /*Atributo */);
+        stTemporal.setString(2, /*Atributo */);
 
-        stm.executeUpdate("CREATE TABLE EMP_PHONE (EMPNO CHAR(6), PHONENO CHAR(4), " + "IDENTCOL INTEGER GENERATED ALWAYS AS IDENTITY)"); 
-        stm = conexion.prepareStatement("INSERT INTO EMP_PHONE (EMPNO, PHONENO) " + "VALUES ('000010', '5555')", Statement.RETURN_GENERATED_KEYS);
-                                      
-        ResultSet rs = stm.getGeneratedKeys(); 
-                                      
-        while (rs.next()) {
-            java.math.BigDecimal idColVar = rs.getBigDecimal(1);     
-                                                
-            System.out.println("automatically generated key value = " + idColVar);
-        }
-        rs.close();
-        stm.close();
+        int filas = stTemporal.executeUpdate();
+        //Solo se autogenera un ID
+        ResultSet clavesCreadas = stTemporal.getGeneratedKeys(); 
+        clavesCreadas.next();
+        //Asignamos el id al objeto de java
+        object.setID(clavesCreadas.getInt("identificador"));
     }
 }
