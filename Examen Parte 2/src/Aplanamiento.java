@@ -11,10 +11,10 @@ public class Aplanamiento {
 
     public static void aplanarFichero(){
         FileOutputStream fout = new FileOutputStream("src/"/*Ruta del archivo a escribir*/);
-            ObjectOutputStream out = new ObjectOutputStream(fout);
-            out.writeObject(/*ArrayList a escribir*/);
-            out.close();
-            System.out.println("Aplanamiento Realizado");
+        ObjectOutputStream out = new ObjectOutputStream(fout);
+        out.writeObject(/*ArrayList a escribir*/);
+        out.close();
+        System.out.println("Aplanamiento Realizado");
     }
 
     public static ArrayList</*Atributos del ArrayList */> desaplanarFichero(){

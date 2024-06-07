@@ -19,21 +19,31 @@ import java.util.ArrayList;
 
 public class BD extends Entrada_Salida{
     public static Connection conexion = null;
+    private static String usuario;
+    private static String contrasenya;
+    private static String ruta;
 
-    public Connection conectarBD() throws SQLException{
+    private void registrarDriver() throws SQLException{
         try {
             Class.forName("org.postgresql.Driver");   
         } catch (Exception e) {
             System.out.println("Error al registrar el driver");
         }
+    } 
 
+    private void solicitarDatosConexionBD(){
+        System.out.println("Inserte el nombre de usuario para iniciar sesión en la base de datos:");
+        usuario = devolverString();
+        System.out.println("Inserte la contraseña del usuario:");
+        contrasenya = devolverString();
+        System.out.println("Inserte la ruta a la Base de Datos (jdbc:postgresql: está por defecto):");
+        ruta = devolverString();
+    }
+
+    public Connection conectarBD() throws SQLException{
+        registrarDriver();
         try {
-            System.out.println("Inserte el nombre de usuario para iniciar sesión en la base de datos:");
-            String usuario = devolverString();
-            System.out.println("Inserte la contraseña del usuario:");
-            String contrasenya = devolverString();
-            System.out.println("Inserte la ruta a la Base de Datos (jdbc:postgresql: está por defecto):");
-            String ruta = devolverString();
+            solicitarDatosConexionBD();
             conexion = DriverManager.getConnection("jdbc:postgresql:" + ruta, usuario, contrasenya);  
         } catch (SQLException e) {
             throw new ExcepcionFalloBD("Fallo en la conexion a la BD");
@@ -57,10 +67,7 @@ public class BD extends Entrada_Salida{
         st.execute();
     }
 
-    public int insertarLibro() throws SQLException{
-        String sql = "INSERT INTO librogarcia(titulo, autor, any_publicacion, genero) VALUES(?, ?, ?, ?)";
-        PreparedStatement stTemporal = conexion.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
-
+    private PreparedStatement solicitarDatosLibro(PreparedStatement stTemporal) throws SQLException{
         System.out.println("Introduzca el titulo del libro:");    
         stTemporal.setString(1, devolverString());
         System.out.println("Introduzca el autor del libro:");      
@@ -69,6 +76,13 @@ public class BD extends Entrada_Salida{
         stTemporal.setInt(3, devolverInt());
         System.out.println("Introduzca el genero del libro:");    
         stTemporal.setString(4, devolverString());
+        return stTemporal;
+    }
+
+    public int insertarLibro() throws SQLException{
+        String sql = "INSERT INTO librogarcia(titulo, autor, any_publicacion, genero) VALUES(?, ?, ?, ?)";
+        PreparedStatement stTemporal = conexion.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+        stTemporal = solicitarDatosLibro(stTemporal);
 
         stTemporal.executeUpdate();
         //Solo se autogenera un ID
