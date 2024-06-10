@@ -5,11 +5,6 @@
 */
 import java.util.Scanner;
 
-/*Importaciones Únicas del Proyecto */
-import java.sql.Statement;
-import java.sql.ResultSet;
-
-
 public class Entrada_Salida {
     static Scanner sc = new Scanner(System.in);
     
@@ -37,6 +32,11 @@ public class Entrada_Salida {
     public static boolean devolverBoolean(){
         boolean bool = sc.nextBoolean();
         return bool;
+    }
+
+    public static byte devolverByte(){
+        byte b = sc.nextByte();
+        return b;
     }
 
 

@@ -59,6 +59,7 @@ public class App extends Entrada_Salida{
                     bd.eliminarLibro(idEliminar);
                     for (Libro l : libros) {
                         if (l.getId()==idEliminar) {
+
                             libros.remove(l);
                         }
                     }

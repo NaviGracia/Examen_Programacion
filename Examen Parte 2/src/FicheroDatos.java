@@ -1,0 +1,7 @@
+/**
+ * FicheroDatos
+ */
+public class FicheroDatos {
+
+    
+}
