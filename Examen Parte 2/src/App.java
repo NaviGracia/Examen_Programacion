@@ -4,37 +4,14 @@
 * @author Ivan García
 * @version 1.0, 2024/02/5
 */
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.Iterator;
 
 public class App extends Entrada_Salida{
     static BD bd = new BD();
-    static Connection conexion;
-    static ArrayList<Libro> libros = new ArrayList<>();
+    static Array libros = new Array();
     
-    public static void insertarArrayList(int id) throws SQLException{
-        PreparedStatement st = conexion.prepareStatement("SELECT * FROM librogarcia WHERE id = " + id);
-        ResultSet rs = st.executeQuery();
-        rs.next();
-        libros.add(new Libro(id, rs.getString(2), rs.getString(3), rs.getInt(4), rs.getString(5)));
-    }
-
-    public static void mostrarLibros(){
-        for (Libro l : libros) {
-            System.out.println(l.toString());
-        }
-    }
-        public static void main(String[] args) throws Exception {
-        try {
-            conexion = bd.conectarBD();
-            libros = bd.cargarBDaArrayList();
-        } catch (SQLException e) {
-            System.out.println("Error en la carga de la BD: " + e);
-        }
+    public static void main(String[] args) throws Exception {
+        bd.conectarBD();
+        libros.conversionLibrosBD(bd);
 
         int eleccion = 0;
         do {    
@@ -45,7 +22,7 @@ public class App extends Entrada_Salida{
                 case 1:
                     int id = bd.insertarLibro();
                     System.out.println("ID autogenerado del libro: " + id);
-                    insertarArrayList(id);
+                    libros.insertarLibro(bd, id);
                     break;
                 case 2:
                     
@@ -57,17 +34,13 @@ public class App extends Entrada_Salida{
                     System.out.println("Inserte el id del libro a eliminar:");
                     int idEliminar = devolverInt();
                     bd.eliminarLibro(idEliminar);
-                    for (Libro l : libros) {
-                        if (l.getId()==idEliminar) {
-                            libros.remove(l);
-                        }
-                    }
+                    libros.eliminarLibro(idEliminar);
                     break;
                 case 5:
                     bd.consultarBD();
                     break;
                 case 6:
-                    mostrarLibros();
+                    libros.mostrarLibros();
                     break;
                 case 7:
                     bd.cerrarBD();
@@ -75,9 +48,9 @@ public class App extends Entrada_Salida{
                     break;
                 case 8:
                     try {
-                        FicheroBytes fb = new FicheroBytes();
-                        fb.escribirBytes();
-                    } catch (ExcepcionFicheros e) {
+                        FicheroBytes fb = new FicheroBytes("/src/prueba.txt");
+                        fb.escribir();
+                    } catch (ExcepcionEscrituraFicheros e) {
                         System.out.println(e.getMessage());
                     }
                     break;

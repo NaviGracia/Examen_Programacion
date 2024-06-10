@@ -34,7 +34,7 @@ public class BD extends Entrada_Salida{
             String contrasenya = devolverString();
             System.out.println("Inserte la ruta a la Base de Datos (jdbc:postgresql: está por defecto):");
             String ruta = devolverString();
-            conexion = DriverManager.getConnection("jdbc:postgresql:" + ruta, usuario, contrasenya);  
+            conexion = DriverManager.getConnection("jdbc:postgresql:" + ruta, usuario, contrasenya); /* //localhost:5432/Biblioteca */ 
         } catch (SQLException e) {
             throw new ExcepcionFalloBD("Fallo en la conexion a la BD");
         }

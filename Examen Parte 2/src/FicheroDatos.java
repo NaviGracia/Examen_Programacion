@@ -3,11 +3,15 @@ import java.io.*;
 /**
  * FicheroDatos
  */
-public class FicheroDatos extends Entrada_Salida implements InterfazFicheros{
+public class FicheroDatos extends Fichero{
+    
+    public FicheroDatos(String ruta) {
+        super(ruta);
+    }
 
-    public void escribirDatos() throws ExcepcionFicheros{
+    public void escribir() throws ExcepcionEscrituraFicheros{
         try {
-            FileWriter fw = new FileWriter(solicitarRuta());
+            FileWriter fw = new FileWriter(getRuta());
             BufferedWriter bw = new BufferedWriter(fw);
             System.out.println("Texto a escribir");
             String texto = devolverString();
@@ -15,25 +19,43 @@ public class FicheroDatos extends Entrada_Salida implements InterfazFicheros{
             bw.close();
             fw.close();
         } catch (Exception e) {
-            throw new ExcepcionFicheros(e);
+            throw new ExcepcionEscrituraFicheros(e);
         }
     }
 
-    public void leerDatos() throws ExcepcionFicheros{
+    public void leer() throws ExcepcionLecturaFicheros{
         try{
-            FileReader fr = new FileReader(solicitarRuta());
+            FileReader fr = new FileReader(getRuta());
             BufferedReader br = new BufferedReader(fr);
             System.out.println(br.readLine());//Lee la primera linea
             br.close();
             fr.close();
         } catch (Exception e) {
-            throw new ExcepcionFicheros(e);
+            throw new ExcepcionLecturaFicheros(e);
         }
     }
 
-    @Override
-    public String solicitarRuta() {
-        System.out.println("Inserte la ruta del fichero:");
-        return devolverString();
+    public void escribirObjeto(Libro l) throws ExcepcionEscrituraFicheros{
+        try{
+            FileOutputStream fout = new FileOutputStream(getRuta());
+            ObjectOutputStream out = new ObjectOutputStream(fout);
+            out.writeObject(l);
+            out.close();
+        }catch(Exception e){
+            throw new ExcepcionEscrituraFicheros(e);
+        }
+    }
+
+    public Libro leerObjeto() throws ExcepcionLecturaFicheros{
+        Libro l = null;
+        try {
+            FileInputStream fis = new FileInputStream(getRuta());
+            ObjectInputStream ois = new ObjectInputStream(fis);
+            l  = (Libro) ois.readObject();
+            ois.close();
+        } catch (Exception e) {
+            throw new ExcepcionLecturaFicheros(e);
+        }
+        return l;
     }
 }

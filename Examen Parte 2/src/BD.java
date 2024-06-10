@@ -10,6 +10,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 /*
  * execute() -> DDL (Crear Tablas, etc) Returns BOOLEAN
@@ -23,40 +24,57 @@ public class BD extends Entrada_Salida{
     private static String contrasenya;
     private static String ruta;
 
-    private void registrarDriver() throws SQLException{
+    private void registrarDriver(){
         try {
             Class.forName("org.postgresql.Driver");   
         } catch (Exception e) {
-            System.out.println("Error al registrar el driver");
+            System.out.println("Error al registrar el driver: " + e);
         }
     } 
 
-    private void solicitarDatosConexionBD(){
+    private void generarConexion(){
         System.out.println("Inserte el nombre de usuario para iniciar sesión en la base de datos:");
         usuario = devolverString();
         System.out.println("Inserte la contraseña del usuario:");
         contrasenya = devolverString();
         System.out.println("Inserte la ruta a la Base de Datos (jdbc:postgresql: está por defecto):");
         ruta = devolverString();
+        try {
+            conexion = DriverManager.getConnection("jdbc:postgresql:" + ruta, usuario, contrasenya);  
+        } catch (Exception e) {
+            System.out.println("Fallo en la conexión a la BD: " + e);
+        }
     }
 
-    public Connection conectarBD() throws SQLException{
+    public void conectarBD(){
         registrarDriver();
-        try {
-            solicitarDatosConexionBD();
-            conexion = DriverManager.getConnection("jdbc:postgresql:" + ruta, usuario, contrasenya);  
-        } catch (SQLException e) {
-            throw new ExcepcionFalloBD("Fallo en la conexion a la BD");
-        }
-        return conexion;
+        generarConexion();
     }
     
-    public ArrayList<Libro> cargarBDaArrayList() throws SQLException{
+    public ArrayList<Libro> cargarBDaArrayList(){
         ArrayList<Libro> libros = new ArrayList<>();
-        PreparedStatement st = conexion.prepareStatement("SELECT * FROM librogarcia WHERE autor != 'censurado'");
-        ResultSet rs = st.executeQuery();
-        while (rs.next()) {
-            libros.add(new Libro(rs.getInt(1), rs.getString(2), rs.getString(3), rs.getInt(4), rs.getString(5)));
+        try {
+            PreparedStatement st = conexion.prepareStatement("SELECT * FROM librogarcia WHERE autor != 'censurado'");
+            ResultSet rs = st.executeQuery();
+            while (rs.next()) {
+                libros.add(new Libro(rs.getInt(1), rs.getString(2), rs.getString(3), rs.getInt(4), rs.getString(5)));    
+            }
+        } catch (Exception e) {
+            System.out.println("Error en la traspaso de la BD al programa: " + e);
+        }
+        return libros;
+    }
+
+    public HashMap<Integer, Libro> cargarBDaHashMap(){
+        HashMap<Integer, Libro> libros = new HashMap<>();
+        try {
+            PreparedStatement st = conexion.prepareStatement("SELECT * FROM librogarcia WHERE autor != 'censurado'");
+            ResultSet rs = st.executeQuery();
+            while (rs.next()) {
+                libros.put(rs.getInt(1), new Libro(rs.getInt(1), rs.getString(2), rs.getString(3), rs.getInt(4), rs.getString(5)));    
+            }
+        } catch (Exception e) {
+            System.out.println("Error en la traspaso de la BD al programa: " + e);
         }
         return libros;
     }
@@ -146,6 +164,21 @@ public class BD extends Entrada_Salida{
             System.out.println(rs.getInt(1) + " " + rs.getString(2) + " " + rs.getString(3) + " " + rs.getInt(4) + " " + rs.getString(5));
         }
     }
+
+    public Libro obtenerLibro(int id){
+        ResultSet rs = null;
+        Libro l = null;
+        try {
+            PreparedStatement st = null;
+            st = conexion.prepareStatement("SELECT * FROM librogarcia WHERE id = ?");
+            st.setInt(1, id);
+            rs = st.executeQuery();
+            l = new Libro(id, rs.getString(2), rs.getString(3), rs.getInt(4), rs.getString(5));
+        } catch (Exception e) {
+            System.out.println("Error al obtener el libro: " + e);
+        }
+        return l;
+    } 
 
     public void cerrarBD(){
         try {

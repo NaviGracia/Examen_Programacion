@@ -1,7 +1,8 @@
 /**
  * InterfazFicheros
  */
-public interface InterfazFicheros {
+public interface InterfazFicheros{
 
-    public String solicitarRuta();
+    public void leer() throws ExcepcionLecturaFicheros;
+    public void escribir() throws ExcepcionEscrituraFicheros;
 }
