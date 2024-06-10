@@ -73,6 +73,14 @@ public class App extends Entrada_Salida{
                     bd.cerrarBD();
                     System.out.println("Saliendo del programa");
                     break;
+                case 8:
+                    try {
+                        FicheroBytes fb = new FicheroBytes();
+                        fb.escribirBytes();
+                    } catch (ExcepcionFicheros e) {
+                        System.out.println(e.getMessage());
+                    }
+                    break;
                 default:
                     break;
             }
